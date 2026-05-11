@@ -1,24 +1,15 @@
-import { promises as fs } from "fs";
-import path from "path";
-
-const DATA_DIR = process.env.VERCEL
-  ? "/tmp/data"
-  : path.join(process.cwd(), "data");
-const FILE = path.join(DATA_DIR, "submissions.json");
-export const RECEIPTS_DIR = path.join(DATA_DIR, "receipts");
+import { supabase } from "./supabase";
 
 export type AbstractStatus = "submitted" | "under-review" | "accepted" | "rejected" | "withdrawn";
 
 export type AbstractSubmission = {
   id: string;
   receivedAt: string;
-  // Authoring
   submittingAuthor: string;
   email: string;
   affiliation: string;
   country: string;
   coAuthors?: string;
-  // Submission
   title: string;
   abstract: string;
   keywords: string;
@@ -26,13 +17,10 @@ export type AbstractSubmission = {
   presentationPref: string;
   funding?: string;
   comments?: string;
-  // Declarations
   originalWork: boolean;
   shareWithReviewers: boolean;
-  // Attached PDF (optional)
   filePath?: string;
   fileUploadedAt?: string;
-  // Review
   status: AbstractStatus;
   reviewedAt?: string;
 };
@@ -82,85 +70,65 @@ type Store = {
   abstracts: AbstractSubmission[];
 };
 
-export const ABSTRACTS_DIR = path.join(DATA_DIR, "abstracts");
+const BUCKET_ABSTRACTS = "abstracts";
+const BUCKET_RECEIPTS = "receipts";
 
-async function ensureFile(): Promise<Store> {
-  try {
-    await fs.mkdir(DATA_DIR, { recursive: true });
-    await fs.mkdir(RECEIPTS_DIR, { recursive: true });
-    await fs.mkdir(ABSTRACTS_DIR, { recursive: true });
-    const buf = await fs.readFile(FILE, "utf-8");
-    const parsed = JSON.parse(buf) as Store;
-    parsed.registrations = (parsed.registrations || []).map((r) => ({
-      ...r,
-      paymentStatus: r.paymentStatus ?? "pending",
-    }));
-    parsed.contacts = parsed.contacts || [];
-    parsed.abstracts = (parsed.abstracts || []).map((a) => ({
-      ...a,
-      status: a.status ?? "submitted",
-    }));
-    return parsed;
-  } catch {
-    const empty: Store = { contacts: [], registrations: [], abstracts: [] };
-    await fs.writeFile(FILE, JSON.stringify(empty, null, 2), "utf-8");
-    return empty;
-  }
-}
+const EXT_TO_MIME: Record<string, string> = {
+  pdf: "application/pdf",
+  jpg: "image/jpeg",
+  jpeg: "image/jpeg",
+  png: "image/png",
+  webp: "image/webp",
+};
 
-async function write(store: Store) {
-  await fs.writeFile(FILE, JSON.stringify(store, null, 2), "utf-8");
-}
+export const RECEIPT_MIME = EXT_TO_MIME;
 
 function newId() {
   return Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
 }
 
+function isNoRows(err: { code?: string } | null) {
+  return err?.code === "PGRST116";
+}
+
 export async function addContact(
   data: Omit<ContactSubmission, "id" | "receivedAt">,
 ): Promise<ContactSubmission> {
-  const store = await ensureFile();
   const entry: ContactSubmission = {
     id: newId(),
     receivedAt: new Date().toISOString(),
     ...data,
   };
-  store.contacts.unshift(entry);
-  await write(store);
+  const { error } = await supabase.from("contacts").insert(entry);
+  if (error) throw error;
   return entry;
 }
 
 export async function addRegistration(
   data: Omit<RegistrationSubmission, "id" | "receivedAt" | "paymentStatus">,
 ): Promise<RegistrationSubmission> {
-  const store = await ensureFile();
   const entry: RegistrationSubmission = {
     id: newId(),
     receivedAt: new Date().toISOString(),
     paymentStatus: "pending",
     ...data,
   };
-  store.registrations.unshift(entry);
-  await write(store);
+  const { error } = await supabase.from("registrations").insert(entry);
+  if (error) throw error;
   return entry;
-}
-
-export async function readAll(): Promise<Store> {
-  return ensureFile();
 }
 
 export async function addAbstract(
   data: Omit<AbstractSubmission, "id" | "receivedAt" | "status">,
 ): Promise<AbstractSubmission> {
-  const store = await ensureFile();
   const entry: AbstractSubmission = {
     id: newId(),
     receivedAt: new Date().toISOString(),
     status: "submitted",
     ...data,
   };
-  store.abstracts.unshift(entry);
-  await write(store);
+  const { error } = await supabase.from("abstracts").insert(entry);
+  if (error) throw error;
   return entry;
 }
 
@@ -168,33 +136,125 @@ export async function updateAbstract(
   id: string,
   patch: Partial<AbstractSubmission>,
 ): Promise<AbstractSubmission | null> {
-  const store = await ensureFile();
-  const idx = store.abstracts.findIndex((x) => x.id === id);
-  if (idx === -1) return null;
-  store.abstracts[idx] = { ...store.abstracts[idx], ...patch };
-  await write(store);
-  return store.abstracts[idx];
+  const { data, error } = await supabase
+    .from("abstracts")
+    .update(patch)
+    .eq("id", id)
+    .select()
+    .single();
+  if (error) {
+    if (isNoRows(error)) return null;
+    throw error;
+  }
+  return data as AbstractSubmission;
 }
 
 export async function findRegistration(
   id: string,
   email: string,
 ): Promise<RegistrationSubmission | null> {
-  const store = await ensureFile();
-  const r = store.registrations.find(
-    (x) => x.id === id && x.email.toLowerCase() === email.toLowerCase(),
-  );
-  return r || null;
+  const { data, error } = await supabase
+    .from("registrations")
+    .select()
+    .eq("id", id)
+    .single();
+  if (error) {
+    if (isNoRows(error)) return null;
+    throw error;
+  }
+  if ((data as RegistrationSubmission).email.toLowerCase() !== email.toLowerCase()) {
+    return null;
+  }
+  return data as RegistrationSubmission;
 }
 
 export async function updateRegistration(
   id: string,
   patch: Partial<RegistrationSubmission>,
 ): Promise<RegistrationSubmission | null> {
-  const store = await ensureFile();
-  const idx = store.registrations.findIndex((x) => x.id === id);
-  if (idx === -1) return null;
-  store.registrations[idx] = { ...store.registrations[idx], ...patch };
-  await write(store);
-  return store.registrations[idx];
+  const { data, error } = await supabase
+    .from("registrations")
+    .update(patch)
+    .eq("id", id)
+    .select()
+    .single();
+  if (error) {
+    if (isNoRows(error)) return null;
+    throw error;
+  }
+  return data as RegistrationSubmission;
+}
+
+export async function readAll(): Promise<Store> {
+  const [c, r, a] = await Promise.all([
+    supabase.from("contacts").select().order("receivedAt", { ascending: false }),
+    supabase.from("registrations").select().order("receivedAt", { ascending: false }),
+    supabase.from("abstracts").select().order("receivedAt", { ascending: false }),
+  ]);
+  if (c.error) throw c.error;
+  if (r.error) throw r.error;
+  if (a.error) throw a.error;
+  return {
+    contacts: (c.data || []) as ContactSubmission[],
+    registrations: (r.data || []) as RegistrationSubmission[],
+    abstracts: (a.data || []) as AbstractSubmission[],
+  };
+}
+
+export async function uploadAbstractFile(
+  id: string,
+  buf: Buffer,
+  ext: string,
+): Promise<string> {
+  const filename = `${id}.${ext}`;
+  const { error } = await supabase.storage
+    .from(BUCKET_ABSTRACTS)
+    .upload(filename, buf, {
+      contentType: EXT_TO_MIME[ext] || "application/octet-stream",
+      upsert: true,
+    });
+  if (error) throw error;
+  return filename;
+}
+
+export async function downloadAbstractFile(
+  filename: string,
+): Promise<{ buf: Buffer; contentType: string } | null> {
+  const { data, error } = await supabase.storage
+    .from(BUCKET_ABSTRACTS)
+    .download(filename);
+  if (error || !data) return null;
+  const buf = Buffer.from(await data.arrayBuffer());
+  return { buf, contentType: data.type || "application/pdf" };
+}
+
+export async function uploadReceiptFile(
+  id: string,
+  buf: Buffer,
+  ext: string,
+): Promise<string> {
+  const filename = `${id}.${ext}`;
+  const { error } = await supabase.storage
+    .from(BUCKET_RECEIPTS)
+    .upload(filename, buf, {
+      contentType: EXT_TO_MIME[ext] || "application/octet-stream",
+      upsert: true,
+    });
+  if (error) throw error;
+  return filename;
+}
+
+export async function downloadReceiptFile(
+  filename: string,
+): Promise<{ buf: Buffer; contentType: string } | null> {
+  const { data, error } = await supabase.storage
+    .from(BUCKET_RECEIPTS)
+    .download(filename);
+  if (error || !data) return null;
+  const buf = Buffer.from(await data.arrayBuffer());
+  const ext = filename.split(".").pop()?.toLowerCase() || "";
+  return {
+    buf,
+    contentType: EXT_TO_MIME[ext] || data.type || "application/octet-stream",
+  };
 }

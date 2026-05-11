@@ -1,7 +1,5 @@
-import { promises as fs } from "fs";
-import path from "path";
 import { NextResponse } from "next/server";
-import { ABSTRACTS_DIR, addAbstract, updateAbstract } from "@/lib/storage";
+import { addAbstract, updateAbstract, uploadAbstractFile } from "@/lib/storage";
 import { TOPICS } from "@/lib/topics";
 
 export const runtime = "nodejs";
@@ -122,9 +120,7 @@ export async function POST(req: Request) {
 
     if (upload && ext) {
       const buf = Buffer.from(await upload.arrayBuffer());
-      await fs.mkdir(ABSTRACTS_DIR, { recursive: true });
-      const filename = `${entry.id}.${ext}`;
-      await fs.writeFile(path.join(ABSTRACTS_DIR, filename), buf);
+      const filename = await uploadAbstractFile(entry.id, buf, ext);
       await updateAbstract(entry.id, {
         filePath: filename,
         fileUploadedAt: new Date().toISOString(),

@@ -1,8 +1,6 @@
-import { promises as fs } from "fs";
-import path from "path";
 import { NextResponse } from "next/server";
 import { isAuthed } from "@/lib/auth";
-import { ABSTRACTS_DIR } from "@/lib/storage";
+import { downloadAbstractFile } from "@/lib/storage";
 
 export const runtime = "nodejs";
 
@@ -17,15 +15,14 @@ export async function GET(
   if (!/^[A-Za-z0-9_.-]+$/.test(file)) {
     return NextResponse.json({ error: "Bad filename." }, { status: 400 });
   }
-  try {
-    const buf = await fs.readFile(path.join(ABSTRACTS_DIR, file));
-    return new NextResponse(buf, {
-      headers: {
-        "content-type": "application/pdf",
-        "content-disposition": `inline; filename="${file}"`,
-      },
-    });
-  } catch {
+  const result = await downloadAbstractFile(file);
+  if (!result) {
     return NextResponse.json({ error: "Not found." }, { status: 404 });
   }
+  return new NextResponse(result.buf as unknown as BodyInit, {
+    headers: {
+      "content-type": result.contentType,
+      "content-disposition": `inline; filename="${file}"`,
+    },
+  });
 }

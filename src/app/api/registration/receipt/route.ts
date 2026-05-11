@@ -1,7 +1,5 @@
-import { promises as fs } from "fs";
-import path from "path";
 import { NextResponse } from "next/server";
-import { findRegistration, RECEIPTS_DIR, updateRegistration } from "@/lib/storage";
+import { findRegistration, updateRegistration, uploadReceiptFile } from "@/lib/storage";
 
 export const runtime = "nodejs";
 
@@ -49,10 +47,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "File too large (max 5 MB)." }, { status: 400 });
     }
 
-    await fs.mkdir(RECEIPTS_DIR, { recursive: true });
-    const filename = `${reg.id}.${ext}`;
-    const fullPath = path.join(RECEIPTS_DIR, filename);
-    await fs.writeFile(fullPath, buf);
+    const filename = await uploadReceiptFile(reg.id, buf, ext);
 
     await updateRegistration(reg.id, {
       receiptPath: filename,

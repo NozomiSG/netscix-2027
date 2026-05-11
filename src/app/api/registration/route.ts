@@ -1,7 +1,5 @@
-import { promises as fs } from "fs";
-import path from "path";
 import { NextResponse } from "next/server";
-import { addRegistration, RECEIPTS_DIR, updateRegistration } from "@/lib/storage";
+import { addRegistration, updateRegistration, uploadReceiptFile } from "@/lib/storage";
 import { CATEGORY_LABEL, FEES, SCHOOLS, computeFee, type Category, type Tier } from "@/lib/fees";
 
 export const runtime = "nodejs";
@@ -133,9 +131,7 @@ export async function POST(req: Request) {
 
     if (receipt && receiptExt) {
       const buf = Buffer.from(await receipt.arrayBuffer());
-      await fs.mkdir(RECEIPTS_DIR, { recursive: true });
-      const filename = `${entry.id}.${receiptExt}`;
-      await fs.writeFile(path.join(RECEIPTS_DIR, filename), buf);
+      const filename = await uploadReceiptFile(entry.id, buf, receiptExt);
       await updateRegistration(entry.id, {
         receiptPath: filename,
         receiptUploadedAt: new Date().toISOString(),
