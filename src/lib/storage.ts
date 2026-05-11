@@ -90,13 +90,13 @@ async function ensureFile(): Promise<Store> {
     const buf = await fs.readFile(FILE, "utf-8");
     const parsed = JSON.parse(buf) as Store;
     parsed.registrations = (parsed.registrations || []).map((r) => ({
-      paymentStatus: "pending",
       ...r,
+      paymentStatus: r.paymentStatus ?? "pending",
     }));
     parsed.contacts = parsed.contacts || [];
     parsed.abstracts = (parsed.abstracts || []).map((a) => ({
-      status: "submitted",
       ...a,
+      status: a.status ?? "submitted",
     }));
     return parsed;
   } catch {
