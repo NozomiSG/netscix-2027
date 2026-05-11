@@ -192,9 +192,6 @@ export default function AdminPage() {
               <Button type="submit" disabled={loading} className="w-full">
                 {loading ? "Signing in…" : "Sign in"}
               </Button>
-              <p className="text-[11px] text-muted">
-                Default password: <span className="font-mono">netscix2027</span>
-              </p>
             </form>
           </CardContent>
         </Card>
