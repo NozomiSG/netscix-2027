@@ -139,7 +139,9 @@ export async function POST(req: Request) {
     }
 
     return NextResponse.json({ ok: true, id: entry.id, fee, receiptUploaded: !!receipt });
-  } catch {
-    return NextResponse.json({ error: "Server error." }, { status: 500 });
+  } catch (err) {
+    console.error("registration POST error:", err);
+    const detail = err instanceof Error ? err.message : String(err);
+    return NextResponse.json({ error: "Server error.", detail }, { status: 500 });
   }
 }
