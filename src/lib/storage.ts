@@ -1,4 +1,4 @@
-import { supabase } from "./supabase";
+import { getSupabase } from "./supabase";
 
 export type AbstractStatus = "submitted" | "under-review" | "accepted" | "rejected" | "withdrawn";
 
@@ -99,7 +99,7 @@ export async function addContact(
     receivedAt: new Date().toISOString(),
     ...data,
   };
-  const { error } = await supabase.from("contacts").insert(entry);
+  const { error } = await getSupabase().from("contacts").insert(entry);
   if (error) throw error;
   return entry;
 }
@@ -113,7 +113,7 @@ export async function addRegistration(
     paymentStatus: "pending",
     ...data,
   };
-  const { error } = await supabase.from("registrations").insert(entry);
+  const { error } = await getSupabase().from("registrations").insert(entry);
   if (error) throw error;
   return entry;
 }
@@ -127,7 +127,7 @@ export async function addAbstract(
     status: "submitted",
     ...data,
   };
-  const { error } = await supabase.from("abstracts").insert(entry);
+  const { error } = await getSupabase().from("abstracts").insert(entry);
   if (error) throw error;
   return entry;
 }
@@ -136,7 +136,7 @@ export async function updateAbstract(
   id: string,
   patch: Partial<AbstractSubmission>,
 ): Promise<AbstractSubmission | null> {
-  const { data, error } = await supabase
+  const { data, error } = await getSupabase()
     .from("abstracts")
     .update(patch)
     .eq("id", id)
@@ -153,7 +153,7 @@ export async function findRegistration(
   id: string,
   email: string,
 ): Promise<RegistrationSubmission | null> {
-  const { data, error } = await supabase
+  const { data, error } = await getSupabase()
     .from("registrations")
     .select()
     .eq("id", id)
@@ -172,7 +172,7 @@ export async function updateRegistration(
   id: string,
   patch: Partial<RegistrationSubmission>,
 ): Promise<RegistrationSubmission | null> {
-  const { data, error } = await supabase
+  const { data, error } = await getSupabase()
     .from("registrations")
     .update(patch)
     .eq("id", id)
@@ -187,9 +187,9 @@ export async function updateRegistration(
 
 export async function readAll(): Promise<Store> {
   const [c, r, a] = await Promise.all([
-    supabase.from("contacts").select().order("receivedAt", { ascending: false }),
-    supabase.from("registrations").select().order("receivedAt", { ascending: false }),
-    supabase.from("abstracts").select().order("receivedAt", { ascending: false }),
+    getSupabase().from("contacts").select().order("receivedAt", { ascending: false }),
+    getSupabase().from("registrations").select().order("receivedAt", { ascending: false }),
+    getSupabase().from("abstracts").select().order("receivedAt", { ascending: false }),
   ]);
   if (c.error) throw c.error;
   if (r.error) throw r.error;
@@ -207,7 +207,7 @@ export async function uploadAbstractFile(
   ext: string,
 ): Promise<string> {
   const filename = `${id}.${ext}`;
-  const { error } = await supabase.storage
+  const { error } = await getSupabase().storage
     .from(BUCKET_ABSTRACTS)
     .upload(filename, buf, {
       contentType: EXT_TO_MIME[ext] || "application/octet-stream",
@@ -220,7 +220,7 @@ export async function uploadAbstractFile(
 export async function downloadAbstractFile(
   filename: string,
 ): Promise<{ buf: Buffer; contentType: string } | null> {
-  const { data, error } = await supabase.storage
+  const { data, error } = await getSupabase().storage
     .from(BUCKET_ABSTRACTS)
     .download(filename);
   if (error || !data) return null;
@@ -234,7 +234,7 @@ export async function uploadReceiptFile(
   ext: string,
 ): Promise<string> {
   const filename = `${id}.${ext}`;
-  const { error } = await supabase.storage
+  const { error } = await getSupabase().storage
     .from(BUCKET_RECEIPTS)
     .upload(filename, buf, {
       contentType: EXT_TO_MIME[ext] || "application/octet-stream",
@@ -247,7 +247,7 @@ export async function uploadReceiptFile(
 export async function downloadReceiptFile(
   filename: string,
 ): Promise<{ buf: Buffer; contentType: string } | null> {
-  const { data, error } = await supabase.storage
+  const { data, error } = await getSupabase().storage
     .from(BUCKET_RECEIPTS)
     .download(filename);
   if (error || !data) return null;
