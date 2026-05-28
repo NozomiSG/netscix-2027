@@ -1,33 +1,72 @@
 import Image from "next/image";
 import PageHero from "@/components/PageHero";
 import SectionNav from "@/components/SectionNav";
+import SpeakerAvatar from "@/components/SpeakerAvatar";
 
 export const metadata = { title: "About | NetSciX 2027" };
 
-type Member = { name: string; affiliation?: string };
+type Member = { name: string; affiliation?: string; photo?: string };
 type Group = { title: string; members: Member[] };
 
 const COMMITTEE: Group[] = [
   {
     title: "Conference Chair",
-    members: [{ name: "Jie Sun", affiliation: "Huawei Hong Kong Research Center" }],
+    members: [
+      {
+        name: "Jie Sun",
+        affiliation: "Huawei Hong Kong Research Center",
+        photo: "/images/committee/jie-sun.jpg",
+      },
+    ],
   },
   {
     title: "Organizing Committee",
     members: [
-      { name: "Jie Sun", affiliation: "Huawei Hong Kong Research Center" },
-      { name: "Renaud Lambiotte", affiliation: "University of Oxford" },
-      { name: "Daniel Ebler", affiliation: "Hong Kong University" },
-      { name: "Shihui Feng", affiliation: "Hong Kong University" },
+      {
+        name: "Jie Sun",
+        affiliation: "Huawei Hong Kong Research Center",
+        photo: "/images/committee/jie-sun.jpg",
+      },
+      {
+        name: "Renaud Lambiotte",
+        affiliation: "University of Oxford",
+        photo: "/images/committee/renaud-lambiotte.jpg",
+      },
+      {
+        name: "Daniel Ebler",
+        affiliation: "Hong Kong University",
+        photo: "/images/committee/daniel-ebler.jpg",
+      },
+      {
+        name: "Shihui Feng",
+        affiliation: "Hong Kong University",
+        photo: "/images/committee/shihui-feng.jpg",
+      },
     ],
   },
   {
     title: "Advisory Board",
     members: [
-      { name: "Guanrong Chen", affiliation: "City University of Hong Kong" },
-      { name: "Hiroki Sayama", affiliation: "Binghamton University" },
-      { name: "Juergen Kurths", affiliation: "Humboldt University Berlin" },
-      { name: "Raissa D'Souza", affiliation: "University of California Davis" },
+      {
+        name: "Guanrong Chen",
+        affiliation: "City University of Hong Kong",
+        photo: "/images/speakers/guanrong-chen.jpg",
+      },
+      {
+        name: "Hiroki Sayama",
+        affiliation: "Binghamton University",
+        photo: "/images/committee/hiroki-sayama.jpg",
+      },
+      {
+        name: "Juergen Kurths",
+        affiliation: "Humboldt University Berlin",
+        photo: "/images/committee/juergen-kurths.jpg",
+      },
+      {
+        name: "Raissa D'Souza",
+        affiliation: "University of California Davis",
+        photo: "/images/committee/raissa-dsouza.jpg",
+      },
     ],
   },
 ];
@@ -70,16 +109,6 @@ const SPONSOR_TIERS = [
   { tier: "Gold Partners", count: 4 },
   { tier: "Focus Session Partners", count: 4 },
 ];
-
-function initials(name: string) {
-  return name
-    .split(/\s+/)
-    .map((s) => s[0])
-    .filter(Boolean)
-    .slice(0, 2)
-    .join("")
-    .toUpperCase();
-}
 
 export default function AboutPage() {
   return (
@@ -267,9 +296,12 @@ export default function AboutPage() {
                       key={m.name}
                       className="flex items-center gap-4 p-4 rounded-lg border border-gray-200 bg-white shadow-sm"
                     >
-                      <div className="shrink-0 w-12 h-12 rounded-full bg-gradient-to-br from-gray-200 to-gray-100 flex items-center justify-center font-serif text-base font-bold text-ink">
-                        {initials(m.name)}
-                      </div>
+                      <SpeakerAvatar
+                        src={m.photo}
+                        name={m.name}
+                        className="shrink-0 w-12 h-12 rounded-full"
+                        textClassName="text-base"
+                      />
                       <div className="min-w-0">
                         <div className="font-medium text-ink truncate">{m.name}</div>
                         {m.affiliation && (

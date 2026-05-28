@@ -1,15 +1,8 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { CheckCircle2, FileCheck2, Upload, X } from "lucide-react";
-import {
-  CATEGORY_LABEL,
-  FEES,
-  TIER_LABEL,
-  type Category,
-  type Tier,
-  computeFee,
-} from "@/lib/fees";
+import { CATEGORY_LABEL, TIER_LABEL, type Category, type Tier } from "@/lib/fees";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -70,11 +63,6 @@ export default function RegistrationForm() {
   const [resultId, setResultId] = useState<string>("");
   const [receiptUploaded, setReceiptUploaded] = useState(false);
   const [token, setToken] = useState("");
-
-  const fee = useMemo(
-    () => computeFee(data.category, data.tier, data.accompanying),
-    [data.category, data.tier, data.accompanying],
-  );
 
   function set<K extends keyof FormState>(key: K, value: FormState[K]) {
     setData((d) => ({ ...d, [key]: value }));
@@ -205,7 +193,7 @@ export default function RegistrationForm() {
                 <Select id="category" value={data.category} onChange={(e) => set("category", e.target.value as Category)}>
                   {(Object.keys(CATEGORY_LABEL) as Category[]).map((c) => (
                     <option key={c} value={c}>
-                      {CATEGORY_LABEL[c]} — USD {FEES[c][data.tier]}
+                      {CATEGORY_LABEL[c]}
                     </option>
                   ))}
                 </Select>
@@ -230,7 +218,7 @@ export default function RegistrationForm() {
                 <Select value={String(data.accompanying)} onChange={(e) => set("accompanying", parseInt(e.target.value, 10))}>
                   {[0, 1, 2, 3, 4].map((n) => (
                     <option key={n} value={n}>
-                      {n === 0 ? "None" : `${n} person${n > 1 ? "s" : ""} (+ USD ${FEES.accompanying[data.tier] * n})`}
+                      {n === 0 ? "None" : `${n} person${n > 1 ? "s" : ""}`}
                     </option>
                   ))}
                 </Select>
@@ -342,15 +330,16 @@ export default function RegistrationForm() {
 
           <Turnstile onToken={setToken} />
 
-          {/* Total + submit */}
+          {/* Summary + submit */}
           <div className="rounded-lg bg-gradient-to-br from-ink to-black text-white p-6 flex flex-col sm:flex-row sm:items-center gap-4 justify-between">
             <div>
-              <div className="text-xs uppercase tracking-widest text-white/60">Total due</div>
-              <div className="mt-1 font-mono text-3xl">USD {fee.toLocaleString()}</div>
+              <div className="text-xs uppercase tracking-widest text-white/60">Registration fee</div>
+              <div className="mt-1 font-serif text-2xl">To be confirmed</div>
               <div className="mt-1 text-xs text-white/60">
                 {CATEGORY_LABEL[data.category]} · {TIER_LABEL[data.tier]}
                 {data.accompanying > 0 && ` · +${data.accompanying} accompanying`}
                 {data.receipt && " · receipt attached"}
+                {" · you'll be invoiced once fees are confirmed"}
               </div>
             </div>
             <Button
