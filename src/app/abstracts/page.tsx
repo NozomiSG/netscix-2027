@@ -11,7 +11,7 @@ const DEADLINES = [
   { date: "Nov 30, 2026", label: "Submission deadline (AoE)", state: "upcoming" },
   { date: "Dec 20, 2026", label: "Author notification", state: "upcoming" },
   { date: "Jan 10, 2027", label: "Camera-ready / final version due", state: "upcoming" },
-  { date: "Feb 15 – 19, 2027", label: "Conference & schools (Hong Kong)", state: "event" },
+  { date: "Jan 24 – 27, 2027", label: "Conference & schools (Hong Kong)", state: "event" },
 ];
 
 

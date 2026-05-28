@@ -13,7 +13,7 @@ const DEADLINES = [
   { date: "Oct 1, 2026", label: "Early-bird registration opens", state: "upcoming" },
   { date: "Dec 31, 2026", label: "Early-bird registration deadline", state: "upcoming" },
   { date: "Jan 31, 2027", label: "Standard registration deadline", state: "upcoming" },
-  { date: "Feb 15 – 19, 2027", label: "Conference & schools (Hong Kong SAR)", state: "event" },
+  { date: "Jan 24 – 27, 2027", label: "Conference & schools (Hong Kong SAR)", state: "event" },
 ];
 
 type FeeRow = { category: string; early: string; standard: string; onsite: string; note?: string };
@@ -24,24 +24,6 @@ const FEES: FeeRow[] = [
   { category: "Industry", early: "USD 550", standard: "USD 650", onsite: "USD 750" },
   { category: "Schools only (1 day)", early: "USD 180", standard: "USD 220", onsite: "USD 280" },
   { category: "Accompanying person (social events)", early: "USD 120", standard: "USD 150", onsite: "USD 180" },
-];
-
-const INCLUDED = [
-  "Keynote talks (3), contributed talks, panels, and poster sessions on Feb 15–17",
-  "One school of your choice (full day) on Feb 14",
-  "3 lunches (Feb 15, 16, 17) and 6 coffee breaks",
-  "Welcome reception on Feb 14 evening",
-  "Conference dinner on Feb 16 evening",
-  "Conference badge, lanyard, and printed program book",
-  "One-year associate membership of the NetSci Society",
-  "Wi-Fi at the venue",
-];
-
-const NOT_INCLUDED = [
-  "Hotel and travel",
-  "Airport transfers",
-  "Optional excursions",
-  "Meals outside scheduled coffee breaks, lunches, and the conference dinner",
 ];
 
 const FAQ = [
@@ -59,7 +41,7 @@ const FAQ = [
   },
   {
     q: "On-site registration",
-    a: "Available on Feb 15 from 08:00 at the registration desk, subject to capacity. Card payment only — no cash will be accepted.",
+    a: "Available on Jan 24 from 08:00 at the registration desk, subject to capacity. Card payment only — no cash will be accepted.",
   },
 ];
 
@@ -78,7 +60,6 @@ export default function RegistrationPage() {
           { id: "fees", label: "Fees" },
           { id: "bank", label: "Bank details" },
           { id: "register", label: "Register" },
-          { id: "included", label: "What's included" },
           { id: "faq", label: "FAQ" },
         ]}
       />
@@ -216,45 +197,6 @@ export default function RegistrationPage() {
 
           <div className="mt-10">
             <RegistrationForm />
-          </div>
-        </div>
-      </section>
-
-      {/* What's included */}
-      <section id="included" className="bg-white border-t border-gray-200">
-        <div className="mx-auto max-w-4xl px-6 py-16">
-          <Badge variant="emerald">In the fee</Badge>
-          <h2 className="mt-3 font-serif text-3xl md:text-4xl font-bold text-ink">
-            What&rsquo;s included
-          </h2>
-
-          <div className="mt-8 grid gap-8 md:grid-cols-2">
-            <div>
-              <h3 className="text-sm font-semibold tracking-wide text-emerald-700 uppercase mb-3">Included</h3>
-              <ul className="space-y-2">
-                {INCLUDED.map((item) => (
-                  <li key={item} className="flex items-start gap-3 text-sm text-ink">
-                    <svg viewBox="0 0 24 24" className="w-4 h-4 mt-1 shrink-0 text-emerald-600" fill="none" stroke="currentColor" strokeWidth="2.5">
-                      <path d="M5 12l5 5L20 7" strokeLinecap="round" strokeLinejoin="round" />
-                    </svg>
-                    {item}
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div>
-              <h3 className="text-sm font-semibold tracking-wide text-gray-500 uppercase mb-3">Not included</h3>
-              <ul className="space-y-2">
-                {NOT_INCLUDED.map((item) => (
-                  <li key={item} className="flex items-start gap-3 text-sm text-gray-600">
-                    <svg viewBox="0 0 24 24" className="w-4 h-4 mt-1 shrink-0 text-gray-400" fill="none" stroke="currentColor" strokeWidth="2.5">
-                      <path d="M6 6l12 12M18 6L6 18" strokeLinecap="round" strokeLinejoin="round" />
-                    </svg>
-                    {item}
-                  </li>
-                ))}
-              </ul>
-            </div>
           </div>
         </div>
       </section>

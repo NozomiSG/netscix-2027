@@ -5,7 +5,6 @@ import { CheckCircle2, FileCheck2, Upload, X } from "lucide-react";
 import {
   CATEGORY_LABEL,
   FEES,
-  SCHOOLS,
   TIER_LABEL,
   type Category,
   type Tier,
@@ -31,7 +30,6 @@ type FormState = {
   country: string;
   category: Category;
   tier: Tier;
-  schools: string[];
   accompanying: number;
   accompanyingNames: string;
   dietary: string;
@@ -52,7 +50,6 @@ const INITIAL: FormState = {
   country: "",
   category: "faculty",
   tier: "early",
-  schools: [],
   accompanying: 0,
   accompanyingNames: "",
   dietary: "",
@@ -81,13 +78,6 @@ export default function RegistrationForm() {
 
   function set<K extends keyof FormState>(key: K, value: FormState[K]) {
     setData((d) => ({ ...d, [key]: value }));
-  }
-
-  function toggleSchool(name: string) {
-    setData((d) => ({
-      ...d,
-      schools: d.schools.includes(name) ? d.schools.filter((s) => s !== name) : [...d.schools, name],
-    }));
   }
 
   function pickReceipt(f: File | null) {
@@ -125,7 +115,6 @@ export default function RegistrationForm() {
       fd.append("billing", data.billing);
       fd.append("payment", data.payment);
       fd.append("notes", data.notes);
-      fd.append("schools", JSON.stringify(data.schools));
       fd.append("turnstileToken", token);
       if (data.receipt) fd.append("receipt", data.receipt);
 
@@ -232,20 +221,6 @@ export default function RegistrationForm() {
                 </Select>
               </div>
             </div>
-          </Section>
-
-          <Section title="Schools (optional)" tone="emerald">
-            <p className="text-sm text-muted mb-3">Pick the schools you want to attend on Feb 14.</p>
-            <ul className="grid gap-2 sm:grid-cols-2">
-              {SCHOOLS.map((s) => (
-                <li key={s}>
-                  <label className="flex items-start gap-3 p-3 border border-gray-200 rounded-md hover:bg-gray-50 cursor-pointer">
-                    <Checkbox checked={data.schools.includes(s)} onChange={() => toggleSchool(s)} className="mt-0.5" />
-                    <span className="text-sm text-ink">{s}</span>
-                  </label>
-                </li>
-              ))}
-            </ul>
           </Section>
 
           <Section title="Accompanying persons" tone="rose">

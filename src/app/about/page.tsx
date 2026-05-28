@@ -10,26 +10,24 @@ type Group = { title: string; members: Member[] };
 const COMMITTEE: Group[] = [
   {
     title: "Conference Chair",
-    members: [{ name: "Jie Sun", affiliation: "HUAWEI Hong Kong Research Center" }],
+    members: [{ name: "Jie Sun", affiliation: "Huawei Hong Kong Research Center" }],
   },
   {
-    title: "Open-source Software Chair",
-    members: [{ name: "Juntao Wang", affiliation: "HUAWEI Hong Kong Research Center" }],
-  },
-  {
-    title: "Colloquium Chair",
-    members: [{ name: "Carlo Vittorio Cannistraci" }],
-  },
-  {
-    title: "Industry Chair",
-    members: [{ name: "Daniel Ebler", affiliation: "HUAWEI Hong Kong Research Center" }],
+    title: "Organizing Committee",
+    members: [
+      { name: "Jie Sun", affiliation: "Huawei Hong Kong Research Center" },
+      { name: "Renaud Lambiotte", affiliation: "University of Oxford" },
+      { name: "Daniel Ebler", affiliation: "Hong Kong University" },
+      { name: "Shihui Feng", affiliation: "Hong Kong University" },
+    ],
   },
   {
     title: "Advisory Board",
     members: [
-      { name: "Adilson Motter", affiliation: "Northwestern University" },
-      { name: "Guangrong Chen", affiliation: "City University of Hong Kong" },
-      { name: "Renaud Lambiotte", affiliation: "University of Oxford" },
+      { name: "Guanrong Chen", affiliation: "City University of Hong Kong" },
+      { name: "Hiroki Sayama", affiliation: "Binghamton University" },
+      { name: "Juergen Kurths", affiliation: "Humboldt University Berlin" },
+      { name: "Raissa D'Souza", affiliation: "University of California Davis" },
     ],
   },
 ];
@@ -134,8 +132,8 @@ export default function AboutPage() {
                   v="≈ 5 min walk to TST Pier — scenic crossing to Central in 10 min"
                 />
                 <Row
-                  k="Climate (Feb)"
-                  v="Mild — average 18 °C day / 14 °C night. Light layers recommended."
+                  k="Climate (Jan)"
+                  v="Mild and cool — average 18 °C day / 14 °C night. Light layers recommended."
                 />
                 <Row k="Language" v="English — official language of the congress." />
                 <Row k="Currency" v="Hong Kong Dollar (HKD). Major cards widely accepted." />

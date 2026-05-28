@@ -7,7 +7,7 @@ import HashScroller from "@/components/HashScroller";
 export const metadata: Metadata = {
   title: "NetSciX 2027 — International School and Conference on Network Science",
   description:
-    "NetSciX 2027 — International School and Conference on Network Science. Feb 2027, Hong Kong SAR.",
+    "NetSciX 2027 — International School and Conference on Network Science. January 24–27, 2027, Hong Kong SAR.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

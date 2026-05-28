@@ -14,10 +14,6 @@ const NAV: Item[] = [
   {
     label: "Key Dates",
     href: "/key-dates",
-    children: [
-      { label: "Important Dates", href: "/key-dates#milestones" },
-      { label: "Schedule", href: "/key-dates#schedule" },
-    ],
   },
   {
     label: "Speakers",
@@ -25,18 +21,11 @@ const NAV: Item[] = [
     children: [
       { label: "Keynote Speakers", href: "/speakers#keynotes" },
       { label: "Invited Speakers", href: "/speakers#invited" },
-      { label: "Schools", href: "/speakers#schools" },
     ],
   },
   {
     label: "Program",
     href: "/program",
-    children: [
-      { label: "Overview", href: "/program#overview" },
-      { label: "Simplified Program", href: "/program#simplified" },
-      { label: "Detailed Program", href: "/program#detailed" },
-      { label: "Awards", href: "/program#awards" },
-    ],
   },
   {
     label: "Submission",
@@ -56,7 +45,6 @@ const NAV: Item[] = [
       { label: "Fees", href: "/registration#fees" },
       { label: "Bank details", href: "/registration#bank" },
       { label: "Register", href: "/registration#register" },
-      { label: "What's included", href: "/registration#included" },
       { label: "FAQ", href: "/registration#faq" },
     ],
   },

@@ -27,7 +27,7 @@ export default function HomePage() {
 
           <div className="mt-12 flex flex-col items-center gap-3">
             <span className="block h-px w-32 bg-white/70" />
-            <p className="text-2xl md:text-3xl font-light tracking-[0.2em]">Feb 2027</p>
+            <p className="text-2xl md:text-3xl font-light tracking-[0.2em]">January 24–27, 2027</p>
             <p className="text-2xl md:text-3xl font-light tracking-[0.2em]">Hong Kong SAR</p>
             <span className="block h-px w-32 bg-white/70" />
           </div>
@@ -54,16 +54,29 @@ export default function HomePage() {
             </h2>
             <div className="mt-6 space-y-5 text-gray-700 leading-relaxed">
               <p>
-                Thank you for your participation in the NetSciX 2027 International School and
-                Conference on Network Science in Hong Kong SAR.
+                NetSciX provides a forum for researchers working in the emergent areas of network
+                science. It fosters interdisciplinary communication and collaboration in network
+                science research across computer and information sciences, physics, mathematics,
+                statistics, life sciences, neuroscience, environmental sciences, social sciences,
+                economics and finance, arts and design.
               </p>
-              <p>
-                The committee is also thankful to our partners and expresses its gratitude for
-                their generous financial support which made NetSciX 2027 possible. NetSciX 2027
-                will be held in Feb. 2027, in Hong Kong.
-              </p>
-              <p>Looking forward to seeing you there!</p>
+              <p>NetSciX 2027 will be held on January 24–27, 2027, in Hong Kong SAR.</p>
             </div>
+
+            <div className="mt-8 rounded-lg border border-brand/30 bg-brand/5 p-6">
+              <p className="text-xs uppercase tracking-[0.3em] text-brand">Special Focus</p>
+              <h3 className="mt-2 font-serif text-xl font-bold text-ink">
+                Network Science meets AI
+              </h3>
+              <p className="mt-3 text-gray-700 leading-relaxed">
+                In addition to the usual topics covered in NetSci conferences, this workshop
+                features an emerging area of research — the rapidly evolving interplay between
+                Network Science and AI — with the intention to promote cross-disciplinary research
+                that uses network science to tackle the most challenging problems arising in
+                artificial intelligence, and vice versa.
+              </p>
+            </div>
+
             <div className="mt-8 border-l-2 border-brand pl-4">
               <p className="font-serif text-lg font-semibold text-ink">Jie Sun</p>
               <p className="text-sm text-muted">Conference Chair</p>
@@ -206,14 +219,6 @@ function ContactSection() {
             <InfoBlock
               title="Office Hours"
               lines={["Monday to Friday", "09:00 – 16:00 (Beijing time)"]}
-            />
-            <InfoBlock
-              title="Email"
-              lines={[
-                "General enquiries — TBD",
-                "Abstract submission — TBD",
-                "Partnerships — TBD",
-              ]}
             />
           </div>
 
