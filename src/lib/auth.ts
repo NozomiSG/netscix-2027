@@ -1,13 +1,23 @@
 import { createHmac, timingSafeEqual } from "crypto";
 import { cookies } from "next/headers";
 
-const PASSWORD = process.env.ADMIN_PASSWORD || "netscix2027";
-const SECRET = process.env.SESSION_SECRET || "netscix-session-secret-change-me";
 const COOKIE_NAME = "netscix_admin";
 const MAX_AGE_SEC = 60 * 60 * 24; // 24h
 
+function getPassword(): string {
+  const p = process.env.ADMIN_PASSWORD;
+  if (!p) throw new Error("Missing ADMIN_PASSWORD env var.");
+  return p;
+}
+
+function getSecret(): string {
+  const s = process.env.SESSION_SECRET;
+  if (!s) throw new Error("Missing SESSION_SECRET env var.");
+  return s;
+}
+
 function sign(value: string) {
-  return createHmac("sha256", SECRET).update(value).digest("hex");
+  return createHmac("sha256", getSecret()).update(value).digest("hex");
 }
 
 function expectedToken() {
@@ -16,8 +26,9 @@ function expectedToken() {
 
 export function verifyPassword(input: string): boolean {
   if (typeof input !== "string" || input.length === 0) return false;
+  const password = getPassword();
   const a = Buffer.from(input);
-  const b = Buffer.from(PASSWORD);
+  const b = Buffer.from(password);
   if (a.length !== b.length) return false;
   return timingSafeEqual(a, b);
 }

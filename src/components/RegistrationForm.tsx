@@ -19,6 +19,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import Turnstile, { isTurnstileEnabled } from "@/components/Turnstile";
 
 type FormState = {
   firstName: string;
@@ -71,6 +72,7 @@ export default function RegistrationForm() {
   const [error, setError] = useState<string>("");
   const [resultId, setResultId] = useState<string>("");
   const [receiptUploaded, setReceiptUploaded] = useState(false);
+  const [token, setToken] = useState("");
 
   const fee = useMemo(
     () => computeFee(data.category, data.tier, data.accompanying),
@@ -124,6 +126,7 @@ export default function RegistrationForm() {
       fd.append("payment", data.payment);
       fd.append("notes", data.notes);
       fd.append("schools", JSON.stringify(data.schools));
+      fd.append("turnstileToken", token);
       if (data.receipt) fd.append("receipt", data.receipt);
 
       const res = await fetch("/api/registration", { method: "POST", body: fd });
@@ -169,6 +172,7 @@ export default function RegistrationForm() {
               setStatus("idle");
               setResultId("");
               setReceiptUploaded(false);
+              setToken("");
             }}
           >
             Submit another registration
@@ -361,6 +365,8 @@ export default function RegistrationForm() {
             />
           </Section>
 
+          <Turnstile onToken={setToken} />
+
           {/* Total + submit */}
           <div className="rounded-lg bg-gradient-to-br from-ink to-black text-white p-6 flex flex-col sm:flex-row sm:items-center gap-4 justify-between">
             <div>
@@ -375,7 +381,7 @@ export default function RegistrationForm() {
             <Button
               type="submit"
               size="lg"
-              disabled={status === "submitting"}
+              disabled={status === "submitting" || (isTurnstileEnabled() && !token)}
               className="bg-white text-ink hover:bg-gray-100"
             >
               {status === "submitting" ? "Submitting…" : "Submit registration"}

@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import Turnstile, { isTurnstileEnabled } from "@/components/Turnstile";
 
 export default function HomePage() {
   return (
@@ -179,6 +180,7 @@ function ContactSection() {
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string>("");
+  const [token, setToken] = useState("");
   return (
     <section id="contact" className="bg-gray-50 border-t border-gray-200">
       <div className="mx-auto max-w-6xl px-6 py-20">
@@ -231,6 +233,7 @@ function ContactSection() {
                   setSubmitting(true);
                   const fd = new FormData(e.currentTarget);
                   const payload = Object.fromEntries(fd.entries());
+                  payload.turnstileToken = token;
                   try {
                     const res = await fetch("/api/contact", {
                       method: "POST",
@@ -271,9 +274,10 @@ function ContactSection() {
                     {error}
                   </div>
                 )}
+                <Turnstile onToken={setToken} />
                 <button
                   type="submit"
-                  disabled={submitting}
+                  disabled={submitting || (isTurnstileEnabled() && !token)}
                   className="bg-ink text-white px-8 py-3 rounded-md font-medium hover:bg-black transition disabled:opacity-60"
                 >
                   {submitting ? "Sending…" : "Submit"}

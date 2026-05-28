@@ -1,13 +1,18 @@
 import { NextResponse } from "next/server";
 import { addContact } from "@/lib/storage";
+import { verifyTurnstile } from "@/lib/turnstile";
+import { notifyContact } from "@/lib/email";
 
 export const runtime = "nodejs";
 
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { firstName, lastName, email, phone, message } = body ?? {};
+    const { firstName, lastName, email, phone, message, turnstileToken } = body ?? {};
 
+    if (!(await verifyTurnstile(typeof turnstileToken === "string" ? turnstileToken : ""))) {
+      return NextResponse.json({ error: "Bot verification failed. Please retry." }, { status: 400 });
+    }
     if (!email || typeof email !== "string" || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       return NextResponse.json({ error: "Valid email required." }, { status: 400 });
     }
@@ -23,8 +28,11 @@ export async function POST(req: Request) {
       message: message.slice(0, 5000),
     });
 
+    await notifyContact(entry);
+
     return NextResponse.json({ ok: true, id: entry.id });
-  } catch {
+  } catch (err) {
+    console.error("contact POST error:", err);
     return NextResponse.json({ error: "Server error." }, { status: 500 });
   }
 }

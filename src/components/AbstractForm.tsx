@@ -11,6 +11,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import Turnstile, { isTurnstileEnabled } from "@/components/Turnstile";
 
 type FormState = {
   submittingAuthor: string;
@@ -59,6 +60,7 @@ export default function AbstractForm() {
   const [status, setStatus] = useState<"idle" | "submitting" | "ok" | "error">("idle");
   const [error, setError] = useState("");
   const [resultId, setResultId] = useState("");
+  const [token, setToken] = useState("");
 
   const words = useMemo(() => wc(d.abstract), [d.abstract]);
   const wordsOk = words >= 50 && words <= 350;
@@ -110,6 +112,7 @@ export default function AbstractForm() {
       fd.append("comments", d.comments);
       fd.append("originalWork", d.originalWork ? "true" : "false");
       fd.append("shareWithReviewers", d.shareWithReviewers ? "true" : "false");
+      fd.append("turnstileToken", token);
       if (d.file) fd.append("file", d.file);
 
       const res = await fetch("/api/abstract", { method: "POST", body: fd });
@@ -152,6 +155,7 @@ export default function AbstractForm() {
               setD(INITIAL);
               setStatus("idle");
               setResultId("");
+              setToken("");
             }}
           >
             Submit another abstract
@@ -354,6 +358,8 @@ export default function AbstractForm() {
             </div>
           </Section>
 
+          <Turnstile onToken={setToken} />
+
           <div className="rounded-lg bg-gradient-to-br from-ink to-black text-white p-6 flex flex-col sm:flex-row sm:items-center gap-4 justify-between">
             <div>
               <div className="text-xs uppercase tracking-widest text-white/60">Ready to submit?</div>
@@ -364,7 +370,7 @@ export default function AbstractForm() {
             <Button
               type="submit"
               size="lg"
-              disabled={status === "submitting"}
+              disabled={status === "submitting" || (isTurnstileEnabled() && !token)}
               className="bg-white text-ink hover:bg-gray-100"
             >
               {status === "submitting" ? "Submitting…" : "Submit abstract"}

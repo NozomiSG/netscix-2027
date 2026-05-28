@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { addAbstract, updateAbstract, uploadAbstractFile } from "@/lib/storage";
 import { TOPICS } from "@/lib/topics";
+import { verifyTurnstile } from "@/lib/turnstile";
+import { notifyAbstract } from "@/lib/email";
 
 export const runtime = "nodejs";
 
@@ -25,6 +27,10 @@ function wordCount(text: string): number {
 export async function POST(req: Request) {
   try {
     const fd = await req.formData();
+
+    if (!(await verifyTurnstile(s(fd.get("turnstileToken"))))) {
+      return NextResponse.json({ error: "Bot verification failed. Please retry." }, { status: 400 });
+    }
 
     const data = {
       submittingAuthor: s(fd.get("submittingAuthor")).trim(),
@@ -125,10 +131,14 @@ export async function POST(req: Request) {
         filePath: filename,
         fileUploadedAt: new Date().toISOString(),
       });
+      entry.filePath = filename;
     }
 
+    await notifyAbstract(entry);
+
     return NextResponse.json({ ok: true, id: entry.id, fileUploaded: !!upload });
-  } catch {
+  } catch (err) {
+    console.error("abstract POST error:", err);
     return NextResponse.json({ error: "Server error." }, { status: 500 });
   }
 }

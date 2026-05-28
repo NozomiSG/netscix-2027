@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { addRegistration, updateRegistration, uploadReceiptFile } from "@/lib/storage";
 import { CATEGORY_LABEL, FEES, SCHOOLS, computeFee, type Category, type Tier } from "@/lib/fees";
+import { verifyTurnstile } from "@/lib/turnstile";
+import { notifyRegistration } from "@/lib/email";
 
 export const runtime = "nodejs";
 
@@ -57,10 +59,15 @@ export async function POST(req: Request) {
         billing: pickString(fd.get("billing")),
         payment: pickString(fd.get("payment")),
         notes: pickString(fd.get("notes")),
+        turnstileToken: pickString(fd.get("turnstileToken")),
         schools,
       };
     } else {
       b = await req.json();
+    }
+
+    if (!(await verifyTurnstile(typeof b.turnstileToken === "string" ? b.turnstileToken : ""))) {
+      return NextResponse.json({ error: "Bot verification failed. Please retry." }, { status: 400 });
     }
 
     const required = ["firstName", "lastName", "email", "affiliation", "country", "category", "tier", "payment"];
@@ -136,12 +143,14 @@ export async function POST(req: Request) {
         receiptPath: filename,
         receiptUploadedAt: new Date().toISOString(),
       });
+      entry.receiptPath = filename;
     }
+
+    await notifyRegistration(entry);
 
     return NextResponse.json({ ok: true, id: entry.id, fee, receiptUploaded: !!receipt });
   } catch (err) {
     console.error("registration POST error:", err);
-    const detail = err instanceof Error ? err.message : String(err);
-    return NextResponse.json({ error: "Server error.", detail }, { status: 500 });
+    return NextResponse.json({ error: "Server error." }, { status: 500 });
   }
 }
