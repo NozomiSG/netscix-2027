@@ -19,11 +19,11 @@ const DEADLINES = [
 type FeeRow = { category: string; early: string; standard: string; onsite: string; note?: string };
 
 const FEES: FeeRow[] = [
-  { category: "Faculty / Postdoc", early: "USD 450", standard: "USD 550", onsite: "USD 650" },
-  { category: "Student", early: "USD 250", standard: "USD 320", onsite: "USD 400", note: "Valid student ID required at check-in." },
-  { category: "Industry", early: "USD 550", standard: "USD 650", onsite: "USD 750" },
-  { category: "Schools only (1 day)", early: "USD 180", standard: "USD 220", onsite: "USD 280" },
-  { category: "Accompanying person (social events)", early: "USD 120", standard: "USD 150", onsite: "USD 180" },
+  { category: "Faculty / Postdoc", early: "TBD", standard: "TBD", onsite: "TBD" },
+  { category: "Student", early: "TBD", standard: "TBD", onsite: "TBD", note: "Valid student ID required at check-in." },
+  { category: "Industry", early: "TBD", standard: "TBD", onsite: "TBD" },
+  { category: "Schools only (1 day)", early: "TBD", standard: "TBD", onsite: "TBD" },
+  { category: "Accompanying person (social events)", early: "TBD", standard: "TBD", onsite: "TBD" },
 ];
 
 const FAQ = [
@@ -104,8 +104,8 @@ export default function RegistrationPage() {
           <Badge variant="blue">How much</Badge>
           <h2 className="mt-3 font-serif text-3xl md:text-4xl font-bold text-ink">Fees</h2>
           <p className="mt-3 text-gray-600 max-w-2xl">
-            Prices are in US dollars and include applicable taxes. The tier is set by the date
-            payment is received.
+            Fees are being finalized and will be confirmed soon. Prices will be shown in US
+            dollars; the tier is set by the date payment is received.
           </p>
 
           <div className="mt-8 hidden md:block overflow-x-auto rounded-xl border border-gray-200 bg-white shadow-sm">
