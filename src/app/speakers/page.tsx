@@ -1,5 +1,6 @@
 import PageHero from "@/components/PageHero";
 import SectionNav from "@/components/SectionNav";
+import SpeakerAvatar from "@/components/SpeakerAvatar";
 
 export const metadata = { title: "Speakers | NetSciX 2027" };
 
@@ -9,6 +10,7 @@ type Speaker = {
   talk?: string;
   bio?: string;
   website?: string;
+  photo?: string;
 };
 
 const KEYNOTES: Speaker[] = [
@@ -43,38 +45,33 @@ const INVITED: Speaker[] = [
     name: "Guanrong Chen",
     affiliation: "City University of Hong Kong",
     website: "https://www.ee.cityu.edu.hk/~gchen/",
+    photo: "/images/speakers/guanrong-chen.jpg",
   },
   {
     name: "Marta González",
     affiliation: "University of California, Berkeley, USA",
     website: "https://ced.berkeley.edu/people/marta-gonzalez",
+    photo: "/images/speakers/marta-gonzalez.jpg",
   },
   {
     name: "Christopher Moore",
     affiliation: "Santa Fe Institute, USA",
     website: "https://sites.santafe.edu/~moore/",
+    photo: "/images/speakers/christopher-moore.jpg",
   },
   {
     name: "Yizhou Sun",
     affiliation: "University of California, Los Angeles",
     website: "https://web.cs.ucla.edu/~yzsun/",
+    photo: "/images/speakers/yizhou-sun.jpg",
   },
   {
     name: "Mario di Bernardo",
     affiliation: "University of Naples Federico II, Italy",
     website: "https://sites.google.com/site/dibernardogroup/home",
+    photo: "/images/speakers/mario-di-bernardo.jpg",
   },
 ];
-
-function initials(name: string) {
-  return name
-    .split(/\s+/)
-    .map((s) => s[0])
-    .filter(Boolean)
-    .slice(0, 2)
-    .join("")
-    .toUpperCase();
-}
 
 export default function SpeakersPage() {
   return (
@@ -107,9 +104,12 @@ export default function SpeakersPage() {
                 key={i}
                 className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden flex"
               >
-                <div className="w-32 sm:w-40 shrink-0 bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center font-serif text-3xl font-bold text-ink/40">
-                  {initials(s.name)}
-                </div>
+                <SpeakerAvatar
+                  src={s.photo}
+                  name={s.name}
+                  className="w-32 sm:w-40 shrink-0"
+                  textClassName="text-3xl"
+                />
                 <div className="p-5 min-w-0 flex-1">
                   <h3 className="font-serif text-lg font-bold text-ink truncate">{s.name}</h3>
                   <p className="text-sm text-muted">{s.affiliation}</p>
@@ -139,9 +139,12 @@ export default function SpeakersPage() {
                 key={i}
                 className="bg-white rounded-lg border border-gray-200 shadow-sm p-5 flex items-center gap-4"
               >
-                <div className="shrink-0 w-14 h-14 rounded-full bg-gradient-to-br from-gray-200 to-gray-100 flex items-center justify-center font-serif text-lg font-bold text-ink/50">
-                  {initials(s.name)}
-                </div>
+                <SpeakerAvatar
+                  src={s.photo}
+                  name={s.name}
+                  className="shrink-0 w-14 h-14 rounded-full"
+                  textClassName="text-lg"
+                />
                 <div className="min-w-0">
                   <div className="font-medium text-ink">{s.name}</div>
                   <div className="text-sm text-muted">{s.affiliation}</div>
