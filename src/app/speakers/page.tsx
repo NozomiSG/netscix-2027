@@ -62,39 +62,37 @@ export default function SpeakersPage() {
 
       {/* Keynote speakers */}
       <section id="keynotes" className="bg-white">
-        <div className="mx-auto max-w-6xl px-6 py-16">
+        <div className="mx-auto max-w-5xl px-6 py-16">
           <div className="mb-10">
             <p className="text-xs uppercase tracking-[0.3em] text-brand">Featured</p>
             <h2 className="mt-2 font-serif text-3xl md:text-4xl font-bold text-ink">
               Keynote Speakers
             </h2>
           </div>
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {KEYNOTES.map((s, i) => (
               <article
                 key={i}
-                className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden flex flex-col transition hover:shadow-md"
+                className="bg-white rounded-xl border border-gray-200 shadow-sm p-6 flex flex-col items-center text-center transition hover:shadow-md"
               >
                 <SpeakerAvatar
                   src={s.photo}
                   name={s.name}
-                  className="aspect-square w-full"
-                  textClassName="text-5xl"
+                  className="w-28 h-28 rounded-full"
+                  textClassName="text-2xl"
                 />
-                <div className="p-5 flex flex-col flex-1">
-                  <h3 className="font-serif text-lg font-bold text-ink">{s.name}</h3>
-                  <p className="mt-1 text-sm text-muted">{s.affiliation}</p>
-                  {s.website && (
-                    <a
-                      href={s.website}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="mt-3 inline-block text-sm font-medium text-brand hover:underline"
-                    >
-                      Website →
-                    </a>
-                  )}
-                </div>
+                <h3 className="mt-4 font-serif text-base font-bold text-ink">{s.name}</h3>
+                <p className="mt-1 text-sm text-muted leading-snug">{s.affiliation}</p>
+                {s.website && (
+                  <a
+                    href={s.website}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-3 text-sm font-medium text-brand hover:underline"
+                  >
+                    Website →
+                  </a>
+                )}
               </article>
             ))}
           </div>
