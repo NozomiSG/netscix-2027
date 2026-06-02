@@ -11,34 +11,61 @@ type Speaker = {
   bio?: string[];
 };
 
+// Rough fallback for the collapsed bio height, in px, used until the client
+// measures the actual left column. Mirrors avatar 210px + name/affiliation/
+// website ≈ 80px on md+. Keeps the layout collapsed during SSR / before JS
+// hydrates, so the bio doesn't briefly flash at full height.
+const FALLBACK_COLLAPSED = 290;
+
 export default function KeynoteCard({ speaker }: { speaker: Speaker }) {
   const leftRef = useRef<HTMLDivElement>(null);
   const bioRef = useRef<HTMLDivElement>(null);
-  const [collapsedHeight, setCollapsedHeight] = useState<number | null>(null);
-  const [contentHeight, setContentHeight] = useState<number | null>(null);
+  const [leftHeight, setLeftHeight] = useState<number | null>(null);
+  const [bioHeight, setBioHeight] = useState<number | null>(null);
   const [expanded, setExpanded] = useState(false);
 
   useEffect(() => {
     const left = leftRef.current;
     const bio = bioRef.current;
     if (!left || !bio) return;
-    const measure = () => {
-      setCollapsedHeight(left.offsetHeight);
-      setContentHeight(bio.scrollHeight);
+
+    let raf = 0;
+    const schedule = () => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => {
+        const lh = left.offsetHeight;
+        const bh = bio.scrollHeight;
+        if (lh > 0) setLeftHeight(lh);
+        if (bh > 0) setBioHeight(bh);
+      });
     };
-    measure();
-    const ro = new ResizeObserver(measure);
+
+    schedule();
+
+    const ro = new ResizeObserver(schedule);
     ro.observe(left);
     ro.observe(bio);
-    return () => ro.disconnect();
+
+    // Web fonts can change line metrics; re-measure once they settle.
+    const fonts = (document as Document & { fonts?: { ready?: Promise<unknown> } }).fonts;
+    fonts?.ready?.then(schedule).catch(() => {});
+
+    return () => {
+      cancelAnimationFrame(raf);
+      ro.disconnect();
+    };
   }, []);
 
   const hasBio = !!speaker.bio?.length;
-  const overflows =
-    hasBio &&
-    collapsedHeight !== null &&
-    contentHeight !== null &&
-    contentHeight > collapsedHeight + 8;
+  const collapsed = leftHeight ?? FALLBACK_COLLAPSED;
+  // Assume overflow until measured: keeps bio collapsed during SSR. Once
+  // bioHeight is known, the real comparison takes over.
+  const overflows = hasBio && (bioHeight === null || bioHeight > collapsed + 8);
+
+  let maxHeight: number | string = "none";
+  if (overflows) {
+    maxHeight = expanded ? bioHeight ?? 9999 : collapsed;
+  }
 
   return (
     <article className="grid gap-6 md:grid-cols-[210px_1fr] md:gap-8 border-b border-gray-200 pb-12 last:border-0 last:pb-0">
@@ -68,11 +95,7 @@ export default function KeynoteCard({ speaker }: { speaker: Speaker }) {
       <div>
         <div
           className="relative overflow-hidden transition-[max-height] duration-300 ease-out"
-          style={
-            overflows
-              ? { maxHeight: expanded ? contentHeight! : collapsedHeight! }
-              : undefined
-          }
+          style={{ maxHeight }}
         >
           <div
             ref={bioRef}
