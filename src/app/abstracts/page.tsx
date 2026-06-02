@@ -60,7 +60,9 @@ export default function AbstractsPage() {
       <section id="deadlines" className="bg-white">
         <div className="mx-auto max-w-4xl px-6 py-16">
           <Badge variant="amber">Calendar</Badge>
-          <h2 className="mt-3 font-serif text-3xl md:text-4xl font-bold text-ink">Deadlines</h2>
+          <h2 className="mt-3 font-serif text-3xl md:text-4xl font-bold text-ink">
+            Deadlines <span className="text-base font-normal text-muted">(tentative, to be finalized)</span>
+          </h2>
           <p className="mt-3 text-gray-600">
             Submission deadlines are 23:59 Anywhere on Earth (AoE). Dates may shift; the form
             stays open until the current deadline passes.
@@ -90,7 +92,8 @@ export default function AbstractsPage() {
         <div className="mx-auto max-w-3xl px-6 py-16">
           <Badge variant="emerald">How to submit</Badge>
           <h2 className="mt-3 font-serif text-3xl md:text-4xl font-bold text-ink">
-            Submission guidelines
+            Submission guidelines{" "}
+            <span className="text-base font-normal text-muted">(tentative, to be finalized)</span>
           </h2>
 
           <div className="mt-6 space-y-4 text-gray-700 leading-relaxed">
@@ -123,7 +126,8 @@ export default function AbstractsPage() {
         <div className="mx-auto max-w-3xl px-6 py-16">
           <Badge variant="blue">Submit</Badge>
           <h2 className="mt-3 font-serif text-3xl md:text-4xl font-bold text-ink">
-            Submit your abstract
+            Submit your abstract{" "}
+            <span className="text-base font-normal text-muted">(tentative, to be finalized)</span>
           </h2>
           <p className="mt-3 text-gray-600">
             One submission per abstract. You&rsquo;ll get a submission ID right after — keep it
@@ -140,7 +144,9 @@ export default function AbstractsPage() {
       <section id="faq" className="bg-white border-t border-gray-200">
         <div className="mx-auto max-w-4xl px-6 py-16">
           <Badge variant="muted">Good to know</Badge>
-          <h2 className="mt-3 font-serif text-3xl md:text-4xl font-bold text-ink">FAQ</h2>
+          <h2 className="mt-3 font-serif text-3xl md:text-4xl font-bold text-ink">
+            FAQ <span className="text-base font-normal text-muted">(tentative, to be finalized)</span>
+          </h2>
 
           <div className="mt-8 divide-y divide-gray-200 border-y border-gray-200">
             {FAQ.map((f) => (

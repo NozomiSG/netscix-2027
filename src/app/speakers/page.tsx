@@ -49,9 +49,6 @@ const KEYNOTES: Speaker[] = [
       "Prof. di Bernardo is regularly invited as a plenary speaker at major conferences, including the SICE Festival Conference 2026, ICAIS & ISAS 2026, Chinese Control Conference 2025, and NetSci 2024. He serves as Chair of the ECC 2026 Best Paper Award Committee, and previously served as Program Co-Chair of the European Control Conference in 2019 and Publicity Chair of the IEEE ISCAS Conference in 2018. His research has been supported by funding from several prominent agencies and industries, including the European Union, UK research councils, and the Italian Ministry of Research and University.",
     ],
   },
-];
-
-const INVITED: Speaker[] = [
   {
     name: "Christopher Moore",
     affiliation: "Santa Fe Institute, USA",
@@ -120,9 +117,11 @@ export default function SpeakersPage() {
                   </div>
                 </div>
                 <div className="space-y-4 text-[15px] leading-relaxed text-gray-700">
-                  {s.bio?.map((para, j) => (
-                    <p key={j}>{para}</p>
-                  ))}
+                  {s.bio ? (
+                    s.bio.map((para, j) => <p key={j}>{para}</p>)
+                  ) : (
+                    <p className="text-muted italic">Full bio coming soon.</p>
+                  )}
                 </div>
               </article>
             ))}
@@ -139,34 +138,11 @@ export default function SpeakersPage() {
               Invited Speakers
             </h2>
           </div>
-          <div className="grid gap-5 sm:grid-cols-2 md:grid-cols-3">
-            {INVITED.map((s, i) => (
-              <div
-                key={i}
-                className="bg-white rounded-lg border border-gray-200 shadow-sm p-5 flex items-center gap-4"
-              >
-                <SpeakerAvatar
-                  src={s.photo}
-                  name={s.name}
-                  className="shrink-0 w-14 h-14 rounded-full"
-                  textClassName="text-lg"
-                />
-                <div className="min-w-0">
-                  <div className="font-medium text-ink">{s.name}</div>
-                  <div className="text-sm text-muted">{s.affiliation}</div>
-                  {s.website && (
-                    <a
-                      href={s.website}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="mt-1 inline-block text-sm font-medium text-brand hover:underline"
-                    >
-                      Website →
-                    </a>
-                  )}
-                </div>
-              </div>
-            ))}
+          <div className="rounded-lg border border-dashed border-gray-300 bg-white px-6 py-12 text-center">
+            <p className="font-serif text-2xl text-ink">TBA</p>
+            <p className="mt-2 text-sm text-muted">
+              Invited speakers will be announced in due course.
+            </p>
           </div>
         </div>
       </section>

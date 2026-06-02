@@ -68,7 +68,9 @@ export default function RegistrationPage() {
       <section id="deadlines" className="bg-white">
         <div className="mx-auto max-w-4xl px-6 py-16">
           <Badge variant="amber">When</Badge>
-          <h2 className="mt-3 font-serif text-3xl md:text-4xl font-bold text-ink">Deadlines</h2>
+          <h2 className="mt-3 font-serif text-3xl md:text-4xl font-bold text-ink">
+            Deadlines <span className="text-base font-normal text-muted">(tentative, to be finalized)</span>
+          </h2>
           <p className="mt-3 text-gray-600">
             All deadlines are 23:59 Anywhere on Earth (AoE). Dates may shift; the registration
             form will always reflect the current open tier.
@@ -102,7 +104,9 @@ export default function RegistrationPage() {
       >
         <div className="mx-auto max-w-6xl px-6 py-16">
           <Badge variant="blue">How much</Badge>
-          <h2 className="mt-3 font-serif text-3xl md:text-4xl font-bold text-ink">Fees</h2>
+          <h2 className="mt-3 font-serif text-3xl md:text-4xl font-bold text-ink">
+            Fees <span className="text-base font-normal text-muted">(tentative, to be finalized)</span>
+          </h2>
           <p className="mt-3 text-gray-600 max-w-2xl">
             Fees are being finalized and will be confirmed soon. Prices will be shown in US
             dollars; the tier is set by the date payment is received.
@@ -170,7 +174,8 @@ export default function RegistrationPage() {
         <div className="mx-auto max-w-3xl px-6 py-16">
           <Badge variant="emerald">Payment</Badge>
           <h2 className="mt-3 font-serif text-3xl md:text-4xl font-bold text-ink">
-            Bank details
+            Bank details{" "}
+            <span className="text-base font-normal text-muted">(tentative, to be finalized)</span>
           </h2>
           <p className="mt-3 text-gray-600">
             Use these details for bank transfers. Card payments use a Stripe-hosted link emailed
@@ -186,7 +191,9 @@ export default function RegistrationPage() {
       <section id="register" className="bg-white border-t border-gray-200">
         <div className="mx-auto max-w-3xl px-6 py-16">
           <Badge variant="brand">Sign up</Badge>
-          <h2 className="mt-3 font-serif text-3xl md:text-4xl font-bold text-ink">Register</h2>
+          <h2 className="mt-3 font-serif text-3xl md:text-4xl font-bold text-ink">
+            Register <span className="text-base font-normal text-muted">(tentative, to be finalized)</span>
+          </h2>
 
           <ol className="mt-6 text-gray-700 leading-relaxed list-decimal pl-5 space-y-1">
             <li>Authors: wait for the acceptance email. School-only attendees can register directly.</li>
@@ -205,7 +212,9 @@ export default function RegistrationPage() {
       <section id="faq" className="bg-gray-50 border-t border-gray-200">
         <div className="mx-auto max-w-4xl px-6 py-16">
           <Badge variant="muted">Good to know</Badge>
-          <h2 className="mt-3 font-serif text-3xl md:text-4xl font-bold text-ink">FAQ</h2>
+          <h2 className="mt-3 font-serif text-3xl md:text-4xl font-bold text-ink">
+            FAQ <span className="text-base font-normal text-muted">(tentative, to be finalized)</span>
+          </h2>
 
           <div className="mt-8 divide-y divide-gray-200 border-y border-gray-200">
             {FAQ.map((f) => (

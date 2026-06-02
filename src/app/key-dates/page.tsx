@@ -24,7 +24,9 @@ export default function KeyDatesPage() {
       {/* Milestones timeline */}
       <section className="bg-white">
         <div className="mx-auto max-w-4xl px-6 py-16">
-          <h2 className="font-serif text-3xl font-bold text-ink mb-8">Important Dates</h2>
+          <h2 className="font-serif text-3xl font-bold text-ink mb-8">
+            Important Dates <span className="text-base font-normal text-muted">(tentative)</span>
+          </h2>
           <ol className="relative border-l-2 border-gray-200 pl-6 space-y-8">
             {MILESTONES.map((m) => (
               <li key={m.label} className="relative">
