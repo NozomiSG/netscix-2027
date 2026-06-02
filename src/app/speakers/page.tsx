@@ -1,6 +1,6 @@
 import PageHero from "@/components/PageHero";
 import SectionNav from "@/components/SectionNav";
-import SpeakerAvatar from "@/components/SpeakerAvatar";
+import KeynoteCard from "@/components/KeynoteCard";
 
 export const metadata = { title: "Speakers | NetSciX 2027" };
 
@@ -90,40 +90,7 @@ export default function SpeakersPage() {
           </div>
           <div className="space-y-12">
             {KEYNOTES.map((s, i) => (
-              <article
-                key={i}
-                className="grid gap-6 md:grid-cols-[210px_1fr] md:gap-8 border-b border-gray-200 pb-12 last:border-0 last:pb-0"
-              >
-                <div className="flex flex-col items-start gap-3">
-                  <SpeakerAvatar
-                    src={s.photo}
-                    name={s.name}
-                    className="w-40 md:w-full aspect-square rounded-xl"
-                    textClassName="text-4xl"
-                  />
-                  <div>
-                    <h3 className="font-serif text-xl font-bold text-ink">{s.name}</h3>
-                    <p className="text-sm text-muted">{s.affiliation}</p>
-                    {s.website && (
-                      <a
-                        href={s.website}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="mt-1 inline-block text-sm font-medium text-brand hover:underline"
-                      >
-                        Website →
-                      </a>
-                    )}
-                  </div>
-                </div>
-                <div className="space-y-4 text-[15px] leading-relaxed text-gray-700">
-                  {s.bio ? (
-                    s.bio.map((para, j) => <p key={j}>{para}</p>)
-                  ) : (
-                    <p className="text-muted italic">Full bio coming soon.</p>
-                  )}
-                </div>
-              </article>
+              <KeynoteCard key={i} speaker={s} />
             ))}
           </div>
         </div>
